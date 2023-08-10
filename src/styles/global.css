@@ -1,0 +1,41 @@
+:root {
+  font-style: 10px;
+  background-color: #ccddec;
+  overflow-y: scroll;
+}
+
+body {
+  box-sizing: border-box;
+  margin: 0;
+  font: 1.6rem/1.5;
+  font-family: "SUIT Variable", sans-serif;
+
+  /* CSS 중첩규칙(Nesting Rules) */
+  & * {
+    box-sizing: inherit;
+  }
+}
+
+img {
+  vertical-align: middle;
+}
+
+button {
+  cursor: pointer;
+  font-size: 1.6rem;
+  &:hover:not(:disabled) {
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+abbr[title] {
+  cursor: help;
+  text-decoration: none;
+}
+
+[hidden] {
+  display: none !important;
+}

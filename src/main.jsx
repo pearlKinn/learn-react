@@ -1,4 +1,5 @@
-import { StrictMode } from "react";
+import './styles/global.css'
+import React from "react";
 import { createRoot } from "react-dom/client";// import { createRoot } from '../node_modules/react-dom/client';
 import App from './App'
 //! React 함수 컴포넌트의 요건
@@ -13,7 +14,7 @@ import App from './App'
 createRoot(document.getElementById("root")).render(
   // App 컴포넌트를 렌더링할 수 있도록 JSX 구문을 추가합니다.
   // <App></App>
-  <StrictMode> {/* strict mode 필수 -> 오류를 잡아내줌 */}
+  <React.StrictMode> {/* strict mode 필수 -> 오류를 잡아내줌 */}
     <App />
-  </StrictMode>
+  </React.StrictMode>
 );
