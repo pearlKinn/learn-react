@@ -3,7 +3,6 @@ import HeaderBar from "./HeaderBar";
 import FooterBar from "./FooterBar";
 
 function RootLayout(props) {
-  console.log(props);
   return (
     <>
       <HeaderBar/>

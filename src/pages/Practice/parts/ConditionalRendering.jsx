@@ -17,7 +17,7 @@ import viteImagePath from "@/assets/vite.svg";
 const status = "isLoading";
 
 function ConditionalRendering({ imageType }) {
-  // 2-1. 조건 문 (함수 몸체(function body) 내부 사용)
+  //! 2-1. 조건 문 (함수 몸체(function body) 내부 사용)
   // let imageComponent; // undefined
 
   // if (imageType === 'vite') {
@@ -27,15 +27,15 @@ function ConditionalRendering({ imageType }) {
   //   imageComponent = <img src={reactImagePath} alt="리액트" />;
   // }
 
-  // 2-2. 조건 식 (함수 몸체 또는 JSX 내부 사용)
-  switch (status) {
-    case "isPending":
-      return <p>대기 중입니다</p>;
-    case "isLoading":
-      return <p>로딩 중입니다</p>;
-    case "isError":
-      return <p>오류 발생</p>;
-  }
+  //! 2-2. 조건 식 (함수 몸체 또는 JSX 내부 사용)
+  // switch (status) {
+  //   case "isPending":
+  //     return <p>대기 중입니다</p>;
+  //   case "isLoading":
+  //     return <p>로딩 중입니다</p>;
+  //   case "isError":
+  //     return <p>오류 발생</p>;
+  // }
 
   // 2-2-1. 3항 연산식
   const imageComponent =
@@ -45,7 +45,7 @@ function ConditionalRendering({ imageType }) {
       <img src={reactImagePath} alt="리액트" />
     );
 
-  console.log(imageComponent);
+  console.log('이미지 컴포넌트',imageComponent);
 
   const isReactImage = imageType === "react";
   const isShowImage = true;
