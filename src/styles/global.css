@@ -1,16 +1,15 @@
 :root {
-  font-style: 10px;
-  background-color: #ccddec;
+  font-size: 10px;
+  background-color: #e4e5ed;
   overflow-y: scroll;
 }
 
 body {
   box-sizing: border-box;
   margin: 0;
-  font: 1.6rem/1.5;
-  font-family: "SUIT Variable", sans-serif;
-
-  /* CSS 중첩규칙(Nesting Rules) */
+  font: 1.6rem/1.5 'SUIT Variable', sans-serif;
+  
+  /* CSS 중첩 규칙(Nesting Rules) */
   & * {
     box-sizing: inherit;
   }
@@ -22,9 +21,7 @@ img {
 
 button {
   cursor: pointer;
-  font-size: 1.6rem;
-  &:hover:not(:disabled) {
-  }
+  font-size: 1.6rem; /* 16px */
 
   &:disabled {
     cursor: not-allowed;
@@ -38,4 +35,20 @@ abbr[title] {
 
 [hidden] {
   display: none !important;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  background: #0007;
+}
+
+.container {
+  padding: 24px;
+  background: #4744be99;
+  color: #17172d;
 }
