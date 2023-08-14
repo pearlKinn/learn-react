@@ -1,9 +1,10 @@
 import Heading from "../components/Heading";
+import styles from '@/styles/HeaderBar.module.css'
 
 function HeaderBar() {
   return (
-    <header>
-      <Heading />
+    <header className={styles.container}>
+      <Heading  />
     </header>
   );
 }

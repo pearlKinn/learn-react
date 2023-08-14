@@ -1,7 +1,6 @@
 import RootLayout from "./layout/RootLayout";
-import About from "./pages/About";
-import Home from "./pages/Home";
-import Practice from "./pages/Practice/Practice";
+// import Practice from "./pages/Practice/Practice";
+import FilterableList from "./pages/Practice/parts/FilterableList";
 
 // App 함수 컴포넌트를 작성합니다.
 function App() {
@@ -9,11 +8,9 @@ function App() {
   return (
     <div className="App">
       <RootLayout>
-        <Practice/>
-        {/* <Home/> */}
-        {/* <About/> */}
+        <FilterableList />
       </RootLayout>
     </div>
   );
 }
-export default App // -> 단축키 exp
+export default App; // -> 단축키 exp
