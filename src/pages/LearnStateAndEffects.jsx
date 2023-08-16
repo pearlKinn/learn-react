@@ -1,51 +1,106 @@
-import { useId, useState } from 'react';
-
-// const getOne = () => 1;
+import { useState } from "react";
 
 function LearnStateAndEffects() {
-  // 지역 변수는 상태 변수???
-  // 리액트 상태 변수는 useState 훅(함수) 사용한다.
-  // Q. 컴포넌트 count 상태를 리액트에서 인식하도록 정의해봅니다.
-  // let count = 100;
-  // A. React.useState() 훅을 사용하세요.
-  // const [count2] = useState(() => getOne());
-  // console.log(count1);
-  // console.log(count2);
-  const [count, setCount] = useState(100);
-  let [step, setStep] = useState(12);
+  // 숫자 값 상태 관리
 
-  // 상태 정의와 상태 변경
+  // 마우스의 x 좌표
+  // const [mouseX, setMouseX] = useState(0);
+  // 마우스의 y 좌표
+  // const [mouseY, setMouseY] = useState(0);
 
-  // 관리가 까다로운 ID 속성 값을 자동 생성하는 훅
-  const stepperId = useId();
+  // 개별 상태 관리 → 그룹(묶음) 상태 관리
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  /* 
+  const handlePrintMousePosition = ({ pageX: x, pageY: y }) => { //~ 이벤트 함수는 매개변수 자리에 무조건 이벤트 객체가 전달 
+    // setMouseX(e.clientX);
+    // setMouseY(e.clientY);
+    setMousePosition({ x, y });
+  };
+ */
+
+  // 객체 상태 관리
+  // { x: 10, y: 96 }
+  // 배열 상태 관리
+  // [10, 96]
+
+  const [repository, setRepository] = useState({
+    id: "repo-101",
+    title: "yamoo9/likelion-FEQA",
+    link: "https://github.com/yamoo9/likelion-FEQA",
+    profile: {
+      url: "https://avatars.githubusercontent.com/u/1850554?s=16&v=4",
+      label: "yamoo9",
+    },
+  });
 
   return (
-    <div className="m-10 flex flex-col gap-2 items-start" lang="en">
+    <div
+      className="m-10 flex flex-col gap-2 items-start"
+      // onMouseMove={handlePrintMousePosition}
+    >
       <h2 className="text-indigo-600 text-2xl uppercase">
-        Learn State And Effects {count}
+        상태 및 이펙트 학습하기
       </h2>
-      <div className='flex flex-col gap-2 items-end'>
-        <div className='flex gap-2 items-center'>
-          <label htmlFor={stepperId} className='text-base'>step</label>
+
+      <output>
+        마우스 X 좌표 : {mousePosition.x} / 마우스 Y 좌표 : {mousePosition.y}
+      </output>
+
+      <h2 className="text-2xl mt-10 font-semibold">저장소 정보 수정</h2>
+      <form className="w-1/2">
+        <div className="flex items-center gap-2 w-full">
+          <label htmlFor="repoTitle" className="font-medium">
+            타이틀 (title)
+          </label>
           <input
-            id={stepperId}
-            type="number"
-            value={step}
+            type="text"
+            name="repoTitle"
+            id="repoTitle"
+            value={repository.title}
             onChange={(e) => {
-              const nextStep = Number(e.target.value);
-              setStep(nextStep);
+              setRepository({
+                ...repository,
+                title: e.target.value,
+              });
             }}
-            className="w-[60px] py-1 px-2 border-slate-300 border rounded-xl"
+            className="flex-1 p-1 border-b-2 border-slate-400 bg-transparent placeholder:text-slate-400"
+            placeholder="yamoo9/repository"
           />
         </div>
-        <button
-          type="button"
-          onClick={() => setCount(count + step)}
-          className="py-0.5 px-2.5 border rounded-md border-slate-600"
-        >
-          +{step}
-        </button>
-      </div>
+        <div className="flex items-center gap-2 w-full">
+          <label htmlFor="repoLink" className="font-medium">
+            링크 (href)
+          </label>
+          <input
+            type="text"
+            name="repoLink"
+            id="repoLink"
+            className="flex-1 p-1 border-b-2 border-slate-400 bg-transparent placeholder:text-slate-400"
+            placeholder="https://my-web-service.dev"
+          />
+        </div>
+        <div className="flex items-center gap-2 w-full">
+          <label htmlFor="repoProfileLabel" className="font-medium">
+            프로필 레이블 (profile.label)
+          </label>
+          <input
+            type="text"
+            name="repoProfileLabel"
+            id="repoProfileLabel"
+            className="flex-1 p-1 border-b-2 border-slate-400 bg-transparent placeholder:text-slate-400"
+            placeholder="yamoo9"
+          />
+        </div>
+
+        <div role="group" className="flex gap-1 mt-5">
+          <button type="submit" className="py-1 px-2 bg-sky-300 text-white">
+            저장
+          </button>
+          <button type="reset" className="py-1 px-2 bg-rose-400 text-white">
+            취소
+          </button>
+        </div>
+      </form>
     </div>
   );
 }
