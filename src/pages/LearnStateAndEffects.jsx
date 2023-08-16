@@ -1,106 +1,88 @@
+import { getRandom } from "@/utils";
 import { useState } from "react";
 
+const getFontWeight = (selectedFontWeight) => {
+  let fontWeight = "";
+
+  switch (selectedFontWeight) {
+    default:
+    case 400:
+      fontWeight = "font-normal";
+      break;
+    case 100:
+      fontWeight = "font-thin";
+      break;
+    case 200:
+      fontWeight = "font-extralight";
+      break;
+    case 300:
+      fontWeight = "font-light";
+      break;
+    case 500:
+      fontWeight = "font-medium";
+      break;
+    case 600:
+      fontWeight = "font-semibold";
+      break;
+    case 700:
+      fontWeight = "font-bold";
+      break;
+    case 800:
+      fontWeight = "font-extrabold";
+      break;
+    case 900:
+      fontWeight = "font-black";
+  }
+
+  return fontWeight;
+};
+
+const fontWeightList = Array(9)
+  .fill(1)
+  .map((n, i) => 100 * (i + 1));
+
 function LearnStateAndEffects() {
-  // 숫자 값 상태 관리
+  const [fontWeights] = useState(fontWeightList);
+  const [selectedFontWeight, setSelectedFontWeight] = useState(
+    fontWeightList[3]
+  );
 
-  // 마우스의 x 좌표
-  // const [mouseX, setMouseX] = useState(0);
-  // 마우스의 y 좌표
-  // const [mouseY, setMouseY] = useState(0);
+  let fontWeight = getFontWeight(selectedFontWeight);
 
-  // 개별 상태 관리 → 그룹(묶음) 상태 관리
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  /* 
-  const handlePrintMousePosition = ({ pageX: x, pageY: y }) => { //~ 이벤트 함수는 매개변수 자리에 무조건 이벤트 객체가 전달 
-    // setMouseX(e.clientX);
-    // setMouseY(e.clientY);
-    setMousePosition({ x, y });
+  const handleChangeFontWeight = (index) => () => {
+    setSelectedFontWeight(fontWeightList[index]);
   };
- */
-
-  // 객체 상태 관리
-  // { x: 10, y: 96 }
-  // 배열 상태 관리
-  // [10, 96]
-
-  const [repository, setRepository] = useState({
-    id: "repo-101",
-    title: "yamoo9/likelion-FEQA",
-    link: "https://github.com/yamoo9/likelion-FEQA",
-    profile: {
-      url: "https://avatars.githubusercontent.com/u/1850554?s=16&v=4",
-      label: "yamoo9",
-    },
-  });
 
   return (
-    <div
-      className="m-10 flex flex-col gap-2 items-start"
-      // onMouseMove={handlePrintMousePosition}
-    >
-      <h2 className="text-indigo-600 text-2xl uppercase">
+    <div className="m-10 flex flex-col gap-2 items-start">
+      <h2 className={`text-indigo-600 text-2xl ${fontWeight} uppercase`}>
         상태 및 이펙트 학습하기
       </h2>
 
-      <output>
-        마우스 X 좌표 : {mousePosition.x} / 마우스 Y 좌표 : {mousePosition.y}
-      </output>
+      <h3>글자 두께 설정</h3>
 
-      <h2 className="text-2xl mt-10 font-semibold">저장소 정보 수정</h2>
-      <form className="w-1/2">
-        <div className="flex items-center gap-2 w-full">
-          <label htmlFor="repoTitle" className="font-medium">
-            타이틀 (title)
-          </label>
-          <input
-            type="text"
-            name="repoTitle"
-            id="repoTitle"
-            value={repository.title}
-            onChange={(e) => {
-              setRepository({
-                ...repository,
-                title: e.target.value,
-              });
-            }}
-            className="flex-1 p-1 border-b-2 border-slate-400 bg-transparent placeholder:text-slate-400"
-            placeholder="yamoo9/repository"
-          />
-        </div>
-        <div className="flex items-center gap-2 w-full">
-          <label htmlFor="repoLink" className="font-medium">
-            링크 (href)
-          </label>
-          <input
-            type="text"
-            name="repoLink"
-            id="repoLink"
-            className="flex-1 p-1 border-b-2 border-slate-400 bg-transparent placeholder:text-slate-400"
-            placeholder="https://my-web-service.dev"
-          />
-        </div>
-        <div className="flex items-center gap-2 w-full">
-          <label htmlFor="repoProfileLabel" className="font-medium">
-            프로필 레이블 (profile.label)
-          </label>
-          <input
-            type="text"
-            name="repoProfileLabel"
-            id="repoProfileLabel"
-            className="flex-1 p-1 border-b-2 border-slate-400 bg-transparent placeholder:text-slate-400"
-            placeholder="yamoo9"
-          />
-        </div>
-
-        <div role="group" className="flex gap-1 mt-5">
-          <button type="submit" className="py-1 px-2 bg-sky-300 text-white">
-            저장
-          </button>
-          <button type="reset" className="py-1 px-2 bg-rose-400 text-white">
-            취소
-          </button>
-        </div>
-      </form>
+      <div
+        role="group"
+        className="bg-stone-100 py-1 px-4 rounded-full shadow-lg shadow-indigo-300/40"
+      >
+        {fontWeights.map((weight, index) => {
+          const isActive = weight === selectedFontWeight;
+          return (
+            <button
+              key={weight}
+              type="button"
+              onClick={handleChangeFontWeight(index)}
+              className={
+                ` py-0.5 px-1.5 bg-stone-100 text-stone-600
+                 ${ isActive ? "font-extrabold text-stone-950" : "font-normal" }
+               hover:bg-indigo-100 transition-colors duration-200`
+            }
+            >
+              {weight}
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 }
