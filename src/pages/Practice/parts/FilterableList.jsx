@@ -4,7 +4,7 @@ import SideEffect from '@/components/SideEffect';
 function FilterableList() {
   return (
     <>
-      <SideEffect />
+      {/* <SideEffect /> */}
       <form>
         <div className={styles.accent}>
           <label htmlFor="todo"></label>

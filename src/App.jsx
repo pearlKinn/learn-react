@@ -1,4 +1,5 @@
 import RootLayout from "./layout/RootLayout";
+import Demo from "./pages/Demo";
 // import Practice from "./pages/Practice/Practice";
 import FilterableList from "./pages/Practice/parts/FilterableList";
 
@@ -8,7 +9,7 @@ function App() {
   return (
     <div className="App">
       <RootLayout>
-        <FilterableList />
+        <Demo/>
       </RootLayout>
     </div>
   );
