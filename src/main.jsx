@@ -1,7 +1,7 @@
-import './styles/global.css'
 import React from "react";
-import { createRoot } from "react-dom/client";// import { createRoot } from '../node_modules/react-dom/client';
-import App from './App'
+import { createRoot } from "react-dom/client"; // import { createRoot } from '../node_modules/react-dom/client';
+import App from './App';
+import './styles/tailwind.css';
 //! React 함수 컴포넌트의 요건
 //! - 함수 이름은 첫글자가 대문자!
 //! - JSX를 반환!

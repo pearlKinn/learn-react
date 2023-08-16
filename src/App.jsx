@@ -1,17 +1,14 @@
-import RootLayout from "./layout/RootLayout";
-import Demo from "./pages/Demo";
-// import Practice from "./pages/Practice/Practice";
-import FilterableList from "./pages/Practice/parts/FilterableList";
+import RootLayout from './layout/RootLayout';
+import LearnStateAndEffects from './pages/LearnStateAndEffects';
 
-// App 함수 컴포넌트를 작성합니다.
 function App() {
-  // JSX 값 반환
   return (
     <div className="App">
       <RootLayout>
-        <Demo/>
+        <LearnStateAndEffects />
       </RootLayout>
     </div>
   );
 }
-export default App; // -> 단축키 exp
+
+export default App;
