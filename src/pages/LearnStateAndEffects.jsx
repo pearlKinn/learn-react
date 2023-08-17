@@ -28,7 +28,8 @@ function LearnStateAndEffects() {
 
       const data = await response.json();
 
-      console.log(data);
+      setData(data)
+      setIsLoading(false)
     }
 
     fetchTodos();
@@ -47,6 +48,13 @@ function LearnStateAndEffects() {
       <h2 className="text-indigo-600 font-suit text-2xl">
         상태 및 이펙트 학습하기
       </h2>
+      {
+        data && data.items?.map(item => (
+          <div key={item.id} className="todo">
+            <strong>{item.doit}</strong>
+          </div>
+        ))
+      }
     </div>
   );
 }
