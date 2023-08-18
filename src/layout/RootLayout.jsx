@@ -1,13 +1,14 @@
 /* eslint-disable react/prop-types */
 import HeaderBar from "./HeaderBar";
 import FooterBar from "./FooterBar";
+import { Outlet } from "react-router-dom";
 
 function RootLayout(props) {
   return (
     <>
       <HeaderBar/>
         <main>
-          {props.children} {/* App.jsx에서 <RootLayout>사이의 '페이지의 주요 콘텐츠'가 RootLayout.jsx의 props로 들어옴 */}
+          <Outlet/>
         </main>
       <FooterBar/>
     </>

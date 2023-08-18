@@ -1,3 +1,19 @@
-const Heading = () => <h1>리액트</h1>;
+import { createBrowserRouter } from "react-router-dom";
+import RootLayout from "./layout/RootLayout";
+import Home from "./pages/Home";
+import Contact from "./pages/Contact ";
+import Products from "./pages/Products";
 
-export default Heading;
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <RootLayout />,
+    children: [
+      { index: true, element: <Home /> },
+      { path: "products", element: <Products /> },
+      { path: "contact", element: <Contact /> },
+    ],
+  },
+]);
+
+export default router;

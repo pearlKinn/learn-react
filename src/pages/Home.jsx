@@ -1,11 +1,9 @@
-import Logo from '../components/Logo'
 function Home() {
   return (
     <div>
-      <h2>홈페이지</h2>
-      <Logo/>
-      <Logo color="rose" size={100}/>
+      <h2 className="text-emerald-500">Home</h2>
     </div>
-  )
+  );
 }
-export default Home
+
+export default Home;
