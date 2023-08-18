@@ -1,59 +1,40 @@
 import Spinner from "@/components/Spinner";
-import { useEffect, useState } from "react";
+import useFetchData from "@/hooks/useFetchData";
+
+const PB_TODOS_ENDPOINT = "http://127.0.0.1:8090/api/collections/todos/records";
 
 function LearnStateAndEffects() {
-  // 1. data
-  const [data, setData] = useState([]);
-  // 2. isLoading
-  const [isLoading, setIsLoading] = useState(false);
-  // 3. error
-  const [error, setError] = useState(null);
+  const { error, data, isLoading } = useFetchData(PB_TODOS_ENDPOINT);
 
-  // side effect
-  // request data
-  useEffect(() => {
-    setIsLoading(true);
-
-    // async await
-    async function fetchTodos() {
-      // fetch api
-      const response = await fetch(
-        "http://127.0.0.1:8090/api/collections/todos/records"
-      );
-
-      // error?
-      if (!response.ok) {
-        // error handling
-      }
-
-      const data = await response.json();
-
-      setData(data)
-      setIsLoading(false)
-    }
-
-    fetchTodos();
-  }, []);
-
-  if(isLoading) {
-    return (
-      <figure>
-        <Spinner size={120} className="absolute z-[10000] top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
-      </figure>
-    )
+  if (isLoading) {
+    return <Spinner size={160} title="데이터 가져오는 중이에요." />;
   }
 
+  if (error) {
+    return (
+      <div role="alert">
+        <h2>{error.type}</h2>
+        <p>{error.message}</p>
+      </div>
+    );
+  }
+
+  // 성공적으로 데이터를 가져온 경우 화면
   return (
     <div className="m-10 flex flex-col gap-2 items-start">
       <h2 className="text-indigo-600 font-suit text-2xl">
         상태 및 이펙트 학습하기
       </h2>
+      {/* JSX: 식만 사용 가능 */}
       {
-        data && data.items?.map(item => (
-          <div key={item.id} className="todo">
-            <strong>{item.doit}</strong>
-          </div>
-        ))
+        <ul>
+          {data.items?.map((item) => (
+            <li key={item.id}>
+              <input type="checkbox" checked={item.done} readOnly />
+              {item.doit}
+            </li>
+          ))}
+        </ul>
       }
     </div>
   );
