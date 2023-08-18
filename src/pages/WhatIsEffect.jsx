@@ -113,7 +113,7 @@ function CountButton({ onIncrement }) {
     // 1초 마다 내부 함수 실행 (카운트 버튼 상태 업데이트)
     // 주기 마다 실행되는 것을 멈출 수 있는 고유 키가 반환
     const cleanupKey = setInterval(() => {
-      //? setTimer(timer + 10);
+      //^ setTimer(timer + 10); 
       setTimer((timer) => timer + 10);
       console.log("try");
     }, 1000);
