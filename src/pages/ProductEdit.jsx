@@ -3,7 +3,11 @@ import { useParams } from "react-router-dom";
 import useProductItem from "@/hooks/useProductItem";
 import Spinner from "@/components/Spinner";
 import { useNavigate } from "react-router-dom";
-import { useDelete as useDeleteProduct, useUpdate as useUpdateProduct } from "@/hooks/products/useProducts";
+import {
+  useDelete as useDeleteProduct,
+  useUpdate as useUpdateProduct,
+} from "@/hooks/products/useProducts";
+import debounce from "@/utils/debounce";
 
 const initialFormState = {
   title: "",
@@ -35,40 +39,47 @@ function ProductEdit() {
     }
   }, [isLoading, data]);
 
-  const handleChangeInput = ({ target }) => {
+  //% const handleChangeInput = ({ target }) => {
+  //%   setFormState({
+  //%     ...formState,
+  //%     [target.name]: target.value,
+  //%   });
+  //% };
+
+  const handleDebounceChangeInput = debounce(({ target }) => {
     setFormState({
       ...formState,
       [target.name]: target.value,
     });
-  };
+  });
 
   const handleEditProduct = (e) => {
-    e.preventDefault(); //~ <- submit을 하면 refresh가 되는데 그걸 방지하기 위해 
+    e.preventDefault(); //~ <- submit을 하면 refresh가 되는데 그걸 방지하기 위해
 
     updateProduct(productId, formState)
-    .then(() => navigate('/products'))
-    .catch((error) => console.error(error));
+      .then(() => navigate("/products"))
+      .catch((error) => console.error(error));
     //! console.log(formState); // 서버에 업데이트 요청할 데이터 (서버 전송 요청)
     //! client -> server
     //! console.log(`${import.meta.env.VITE_PB_API}/collections/products/records/${productId}`)//?
-
-    // Content-Type: application/json
-/*  
-   fetch(
-      `${
-        import.meta.env.VITE_PB_API
-      }/collections/products/records/${productId}`,
-      {
-        method: "PATCH", // 수정!!
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formState),
-      }
-    )
-      .then((response) => console.log(response))
-      .catch((err) => console.log(err)); */
   };
+  // Content-Type: application/json
+  /*  ⬇️⬇️⬇️
+ fetch(
+    `${
+      import.meta.env.VITE_PB_API
+    }/collections/products/records/${productId}`,
+    {
+      method: "PATCH", // 수정!!
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formState),
+    }
+  )
+    .then((response) => console.log(response))
+    .catch((err) => console.log(err)); 
+    */
 
   const handleDeleteProduct = () => {
     const userConfirm = confirm("정말로 지우실 건가요?");
@@ -109,8 +120,9 @@ function ProductEdit() {
               type="text"
               name="title"
               id={titleId}
-              value={formState.title}
-              onChange={handleChangeInput}
+              defaultValue={formState.title}
+              //% value={formState.title}
+              onChange={handleDebounceChangeInput}
               className="border border-gray-600"
             />
           </div>
@@ -121,8 +133,8 @@ function ProductEdit() {
               type="text"
               name="color"
               id={colorId}
-              value={formState.color}
-              onChange={handleChangeInput}
+              defaultValue={formState.color}
+              onChange={handleDebounceChangeInput}
               className="border border-gray-600"
             />
           </div>
@@ -133,8 +145,8 @@ function ProductEdit() {
               type="number"
               name="price"
               id={priceId}
-              value={formState.price}
-              onChange={handleChangeInput}
+              defaultValue={formState.price}
+              onChange={handleDebounceChangeInput}
               className="border border-gray-600"
             />
           </div>
