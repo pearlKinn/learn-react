@@ -18,6 +18,7 @@ function ProductEdit() {
   const { isLoading, data } = useProductItem(productId);
 
   const [formState, setFormState] = useState(initialFormState);
+  console.log(data.id)
 
   useEffect(() => {
     if (!isLoading && data) {
@@ -39,11 +40,10 @@ function ProductEdit() {
   if (isLoading) {
     return <Spinner size={120} />;
   }
-
   if (data) {
     return (
       <>
-        <h2 className="text-2xl text-center">{data.title} 수정 폼</h2>
+        <h2 className="text-2xl text-center">{data.title}({data.color}) 수정 폼</h2>
         <form>
           {/* title */}
           <div>
