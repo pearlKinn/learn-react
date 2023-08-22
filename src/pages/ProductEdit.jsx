@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import useProductItem from "@/hooks/useProductItem";
 import Spinner from "@/components/Spinner";
 import { useNavigate } from "react-router-dom";
+import { useDelete as useDeleteProduct, useUpdate as useUpdateProduct } from "@/hooks/products/useProducts";
 
 const initialFormState = {
   title: "",
@@ -20,6 +21,9 @@ function ProductEdit() {
   const { isLoading, data } = useProductItem(productId);
 
   const [formState, setFormState] = useState(initialFormState);
+
+  const deleteProduct = useDeleteProduct();
+  const updateProduct = useUpdateProduct();
 
   useEffect(() => {
     if (!isLoading && data) {
@@ -39,13 +43,18 @@ function ProductEdit() {
   };
 
   const handleEditProduct = (e) => {
-    e.preventDefault(); // <- submit을 하면 refresh가 되는데 그걸 방지하기 위해
-    console.log(formState); // 서버에 업데이트 요청할 데이터 (서버 전송 요청)
-    // client -> server
-    // console.log(`${import.meta.env.VITE_PB_API}/collections/products/records/${productId}`)//?
+    e.preventDefault(); //~ <- submit을 하면 refresh가 되는데 그걸 방지하기 위해 
+
+    updateProduct(productId, formState)
+    .then(() => navigate('/products'))
+    .catch((error) => console.error(error));
+    //! console.log(formState); // 서버에 업데이트 요청할 데이터 (서버 전송 요청)
+    //! client -> server
+    //! console.log(`${import.meta.env.VITE_PB_API}/collections/products/records/${productId}`)//?
 
     // Content-Type: application/json
-    fetch(
+/*  
+   fetch(
       `${
         import.meta.env.VITE_PB_API
       }/collections/products/records/${productId}`,
@@ -58,24 +67,29 @@ function ProductEdit() {
       }
     )
       .then((response) => console.log(response))
-      .catch((err) => console.log(err));
+      .catch((err) => console.log(err)); */
   };
 
   const handleDeleteProduct = () => {
     const userConfirm = confirm("정말로 지우실 건가요?");
 
     if (userConfirm) {
-      fetch( `${ import.meta.env.VITE_PB_API }/collections/products/records/${productId}`,
-        {
-          method: "DELETE", // 수정!!
-        }
-      )
+      deleteProduct(productId)
         .then(() => {
-          // PB에서 지웠다(성공)
-          // 제품 목록 페이지로 이동
           navigate("/products");
         })
         .catch((err) => console.error(err));
+      // fetch( `${ import.meta.env.VITE_PB_API }/collections/products/records/${productId}`,
+      //   {
+      //     method: "DELETE", // 수정!!
+      //   }
+      // )
+      //   .then(() => {
+      //     // PB에서 지웠다(성공)
+      //     // 제품 목록 페이지로 이동
+      //     navigate("/products");
+      //   })
+      //   .catch((err) => console.error(err));
     }
   };
   if (isLoading) {
