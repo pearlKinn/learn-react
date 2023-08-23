@@ -13,7 +13,7 @@ import SignUp from "./pages/SignUp";
 import PassingProps from "./learn/1-passing-props";
 import LiftingStateUp from "./learn/2-lifting-state-up";
 import PropsDrillingIssue from "./learn/3-props-drilling-issue";
-import ReactContextAPI from "./learn/4-react-context-api";
+import ReactContextAPI from "./learn/4-1react-context-api";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
