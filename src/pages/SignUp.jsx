@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import pb from '@/api/pocketbase';
 import { Link } from 'react-router-dom';
+import debounce from '@/utils/debounce';
 
 function SignUp() {
 
@@ -40,20 +41,22 @@ function SignUp() {
       [name]: value
     });
   };
+  
+  const handleDebounceInput = debounce(handleInput, 500)
 
   return (
     <div>
       <h2>회원가입</h2>
 
-      <form onSubmit={handleRegister} className='flex flex-col gap-2 mt-2 justify-start items-start'>
+      <form onSubmit={handleRegister} className='flex flex-col gap-2 mt-2 justify-start items-start p-3'>
         <div>
           <label htmlFor="name">사용자 이름</label>
           <input
             type="text"
             name="name"
             id="name"
-            value={formState.name}
-            onChange={handleInput}
+            defaultValue={formState.name}
+            onChange={handleDebounceInput}
             className='border border-slate-300 ml-2'
           />
         </div>
@@ -63,8 +66,8 @@ function SignUp() {
             type="text"
             name="username"
             id="username"
-            value={formState.username}
-            onChange={handleInput}
+            defaultValue={formState.username}
+            onChange={handleDebounceInput}
             className='border border-slate-300 ml-2'
           />
         </div>
@@ -74,8 +77,8 @@ function SignUp() {
             type="email"
             name="email"
             id="email"
-            value={formState.email}
-            onChange={handleInput}
+            defaultValue={formState.email}
+            onChange={handleDebounceInput}
             className='border border-slate-300 ml-2'
           />
         </div>
@@ -85,8 +88,8 @@ function SignUp() {
             type="password"
             name="password"
             id="password"
-            value={formState.password}
-            onChange={handleInput}
+            defaultValue={formState.password}
+            onChange={handleDebounceInput}
             className='border border-slate-300 ml-2'
           />
         </div>
@@ -96,8 +99,8 @@ function SignUp() {
             type="password"
             name="passwordConfirm"
             id="passwordConfirm"
-            value={formState.passwordConfirm}
-            onChange={handleInput}
+            defaultValue={formState.passwordConfirm}
+            onChange={handleDebounceInput}
             className='border border-slate-300 ml-2'
           />
         </div>
