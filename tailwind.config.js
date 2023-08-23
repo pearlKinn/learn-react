@@ -5,7 +5,14 @@ export default {
     './src/**/*.jsx'
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        'suit': ['SUIT Variable']
+      },
+      backgroundImage: {
+        'hero': 'url("/hero.jpg")'
+      }
+    },
   },
   plugins: [],
 }
