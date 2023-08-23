@@ -7,3 +7,5 @@ function debounce(callback, timeout = 300) {
 }
 
 export default debounce;
+
+// bind call apply 찾아보기 - function prototype

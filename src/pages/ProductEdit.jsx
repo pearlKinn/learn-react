@@ -20,7 +20,9 @@ function ProductEdit() {
   const priceId = useId();
   const colorId = useId();
 
-  const { productId } = useParams();
+//% useParams()가 반환하는 객체에서 productId 속성의 값을 추출하여 productId 변수에 할당 
+  const { productId } = useParams(); // useParams() -> 객체 반환
+
   const navigate = useNavigate();
   const { isLoading, data } = useProductItem(productId);
 
@@ -39,12 +41,12 @@ function ProductEdit() {
     }
   }, [isLoading, data]);
 
-  //% const handleChangeInput = ({ target }) => {
-  //%   setFormState({
-  //%     ...formState,
-  //%     [target.name]: target.value,
-  //%   });
-  //% };
+  const handleChangeInput = ({ target }) => {
+    setFormState({
+      ...formState,
+      [target.name]: target.value,
+    });
+  };
 
   const handleDebounceChangeInput = debounce(({ target }) => {
     setFormState({
@@ -54,32 +56,32 @@ function ProductEdit() {
   });
 
   const handleEditProduct = (e) => {
-    e.preventDefault(); //~ <- submit을 하면 refresh가 되는데 그걸 방지하기 위해
+    e.preventDefault(); //~ <- submit을 하면 refresh가 되는데 그걸 방지하기 위해 
 
-    updateProduct(productId, formState)
+    updateProduct(productId, formState) // formState - 서버에 업데이트 요청할 데이터 (서버 전송 요청)
       .then(() => navigate("/products"))
       .catch((error) => console.error(error));
-    //! console.log(formState); // 서버에 업데이트 요청할 데이터 (서버 전송 요청)
+
     //! client -> server
-    //! console.log(`${import.meta.env.VITE_PB_API}/collections/products/records/${productId}`)//?
+
   };
   // Content-Type: application/json
-  /*  ⬇️⬇️⬇️
- fetch(
-    `${
-      import.meta.env.VITE_PB_API
-    }/collections/products/records/${productId}`,
-    {
-      method: "PATCH", // 수정!!
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(formState),
-    }
-  )
-    .then((response) => console.log(response))
-    .catch((err) => console.log(err)); 
-    */
+  /**  ⬇️⬇️⬇️
+  fetch(
+  //^  `${                                           
+  //^    import.meta.env.VITE_PB_API                 
+  //^  }/collections/products/records/${productId}`, 
+  //^  {                                             
+  //^    method: "PATCH", // 수정!!                   
+  //^    headers: {                                  
+  //^      "Content-Type": "application/json",       
+  //^    },                                          
+  //^    body: JSON.stringify(formState),            
+  //^  }                                             
+  //^)                                               
+  //^  .then((response) => console.log(response))    
+  //^  .catch((err) => console.log(err));            
+  //^  */
 
   const handleDeleteProduct = () => {
     const userConfirm = confirm("정말로 지우실 건가요?");
@@ -90,17 +92,18 @@ function ProductEdit() {
           navigate("/products");
         })
         .catch((err) => console.error(err));
-      // fetch( `${ import.meta.env.VITE_PB_API }/collections/products/records/${productId}`,
-      //   {
-      //     method: "DELETE", // 수정!!
-      //   }
-      // )
-      //   .then(() => {
-      //     // PB에서 지웠다(성공)
-      //     // 제품 목록 페이지로 이동
-      //     navigate("/products");
-      //   })
-      //   .catch((err) => console.error(err));
+
+      //^ fetch( `${ import.meta.env.VITE_PB_API }/collections/products/records/${productId}`,
+      //^   {
+      //^     method: "DELETE", // 수정!!
+      //^   }
+      //^ )
+      //^   .then(() => {
+      //^     // PB에서 지웠다(성공)
+      //^     // 제품 목록 페이지로 이동
+      //^     navigate("/products");
+      //^   })
+      //^   .catch((err) => console.error(err));
     }
   };
   if (isLoading) {
@@ -120,9 +123,8 @@ function ProductEdit() {
               type="text"
               name="title"
               id={titleId}
-              defaultValue={formState.title}
-              //% value={formState.title}
-              onChange={handleDebounceChangeInput}
+              defaultValue={formState.title} // 리액트가 제공하지 않는 함수를 사용할 때는  defaultValue 사용해야 한다.
+              onChange={handleDebounceChangeInput} // debounce 함수
               className="border border-gray-600"
             />
           </div>
@@ -145,8 +147,8 @@ function ProductEdit() {
               type="number"
               name="price"
               id={priceId}
-              defaultValue={formState.price}
-              onChange={handleDebounceChangeInput}
+              value={formState.price}
+              onChange={handleChangeInput}
               className="border border-gray-600"
             />
           </div>

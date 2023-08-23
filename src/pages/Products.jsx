@@ -1,9 +1,9 @@
-import { useProducts } from "@/api/useProducts";
+//^ import { useProducts } from "@/api/useProducts";
+//^ import { useEffect } from "react";
 import Spinner from "@/components/Spinner";
 import useDocumentTitle from "@/hooks/useDocumentTitle";
 import useProductList from "@/hooks/useProductList";
 import { getPbImageURL, numberWithComma } from "@/utils";
-import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 // PB → READ / CREATE / UPDATE / DELETE
@@ -21,6 +21,7 @@ import { Link } from "react-router-dom";
 function Products() {
   useDocumentTitle("제품 목록");
   const { isLoading, data } = useProductList(); //sdk를 사용하지 않고 훅으로 사용했을 때
+
   //^ const { status, data: sdkData, getProductList } = useProducts();
 
   //^ useEffect(() => { 

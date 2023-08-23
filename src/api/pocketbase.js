@@ -1,7 +1,6 @@
-import PocketBase from 'pocketbase'
+import PocketBase from 'pocketbase';
 
-const pb = new PocketBase(import.meta.env.VITE_PB_URL)
-
+const pb = new PocketBase(import.meta.env.VITE_PB_URL);
 
 // PocketBase SDK {}
-export default pb
+export default pb;
