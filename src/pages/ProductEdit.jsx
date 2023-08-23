@@ -12,7 +12,8 @@ import debounce from "@/utils/debounce";
 const initialFormState = {
   title: "",
   color: "",
-  price: 0,
+  price: "",
+  /* 숫자로 설정했을 때 defaultValue를 사용하면 원래 값이 뜨지 않고 0원으로 뜨는 이슈가 있어 숫자가 아닌 빈 문자열로 바꿔주면 된다. */
 };
 
 function ProductEdit() {
@@ -20,7 +21,7 @@ function ProductEdit() {
   const priceId = useId();
   const colorId = useId();
 
-//% useParams()가 반환하는 객체에서 productId 속성의 값을 추출하여 productId 변수에 할당 
+  //% useParams()가 반환하는 객체에서 productId 속성의 값을 추출하여 productId 변수에 할당
   const { productId } = useParams(); // useParams() -> 객체 반환
 
   const navigate = useNavigate();
@@ -56,14 +57,13 @@ function ProductEdit() {
   });
 
   const handleEditProduct = (e) => {
-    e.preventDefault(); //~ <- submit을 하면 refresh가 되는데 그걸 방지하기 위해 
+    e.preventDefault(); //~ <- submit을 하면 refresh가 되는데 그걸 방지하기 위해
 
     updateProduct(productId, formState) // formState - 서버에 업데이트 요청할 데이터 (서버 전송 요청)
       .then(() => navigate("/products"))
       .catch((error) => console.error(error));
 
     //! client -> server
-
   };
   // Content-Type: application/json
   /**  ⬇️⬇️⬇️
@@ -144,11 +144,12 @@ function ProductEdit() {
           <div className="flex gap-3">
             <label htmlFor={priceId}>price</label>
             <input
+              step={100}
               type="number"
               name="price"
               id={priceId}
-              value={formState.price}
-              onChange={handleChangeInput}
+              defaultValue={formState.price}
+              onChange={handleDebounceChangeInput}
               className="border border-gray-600"
             />
           </div>
