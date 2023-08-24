@@ -13,7 +13,10 @@ import SignUp from "./pages/SignUp";
 import PassingProps from "./learn/1-passing-props";
 import LiftingStateUp from "./learn/2-lifting-state-up";
 import PropsDrillingIssue from "./learn/3-props-drilling-issue";
-import ReactContextAPI from "./learn/4-1react-context-api";
+import ReactContextAPI1 from "./learn/4-1react-context-api";
+import ReactContextAPI2 from "./learn/4-2react-context-api";
+import RefExampleMemoValues from "./learn/5-ref-1-memo-values";
+import RefExampleReferencingDOM from "./learn/6-ref-2-referencing-dom";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -33,7 +36,10 @@ const router = createBrowserRouter(
       <Route path="learn/01" element={<PassingProps />} />
       <Route path="learn/02" element={<LiftingStateUp />} />
       <Route path="learn/03" element={<PropsDrillingIssue />} />
-      <Route path="learn/04" element={<ReactContextAPI />} />
+      <Route path="learn/04/01" element={<ReactContextAPI1 />} />
+      <Route path="learn/04/02" element={<ReactContextAPI2 />} />
+      <Route path="learn/05" element={<RefExampleMemoValues />} />
+      <Route path="learn/06" element={<RefExampleReferencingDOM />} />
     </Route>
   )
 );

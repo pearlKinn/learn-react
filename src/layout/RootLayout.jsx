@@ -16,7 +16,19 @@ function RootLayout({ displaySideMenu = false }) {
               <li><Link to="/learn/01">Props 전달</Link></li>
               <li><Link to="/learn/02">상태 끌어올리기</Link></li>
               <li><Link to="/learn/03">속성(props) 드릴링 이슈</Link></li>
-              <li><Link to="/learn/04">컴포넌트 상태 공유 Context{' '}</Link></li>
+              <li>
+                <Link to="/learn/04/01">
+                  상태 공유 Context{' '}
+                  <abbr
+                    title="Application Programming Interface"
+                    className="cursor-help no-underline"
+                  >
+                    API
+                  </abbr>
+                </Link>
+              </li>
+              <li><Link to="/learn/05">값을 기억하기 위한 ref</Link></li>
+              <li><Link to="/learn/06">DOM 요소를 참조하는 Refs{/* 컴포넌트 내부의 DOM 요소를 참조하는 Refs */}</Link></li>
             </ul>
           </nav>
         )}
