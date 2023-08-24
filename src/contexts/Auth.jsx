@@ -9,8 +9,9 @@
 
 /* -------------------------------------------------------------------------- */
 
-import { createContext, useEffect, useState } from 'react';
+import { createContext, useEffect, useState, useContext } from 'react';
 import pb from '@/api/pocketbase';
+import { string, node } from 'prop-types';
 
 // Context 생성
 const AuthContext = createContext();
@@ -29,7 +30,6 @@ function AuthProvider({ displayName = 'AuthProvider', children }) {
 
   useEffect(() => {
     const unsub = pb.authStore.onChange((token, model) => {
-      console.log({ token, model });
       setAuthState((state) => ({
         ...state,
         isAuth: !!model,
@@ -56,11 +56,11 @@ function AuthProvider({ displayName = 'AuthProvider', children }) {
       .authWithPassword(usernameOrEmail, password);
   };
 
-  const signOut = async () => { // signOut은 비동기 통신이 아니여도 됨
-    return await pb.collection('users').clear();
+  const signOut = async () => {
+    return await pb.authStore.clear();
   };
 
-  const secession = async (recordId) => {
+  const cancelMembership = async (recordId) => {
     return await pb.collection('users').delete(recordId);
   };
 
@@ -69,7 +69,7 @@ function AuthProvider({ displayName = 'AuthProvider', children }) {
     signUp,
     signIn,
     signOut,
-    secession,
+    cancelMembership,
   };
 
   return (
@@ -79,4 +79,20 @@ function AuthProvider({ displayName = 'AuthProvider', children }) {
   );
 }
 
+AuthProvider.propTypes = {
+  displayName: string,
+  children: node.isRequired // React.ReactNode
+};
+
 export default AuthProvider;
+
+// 커스텀 훅
+// 인증 정보를 앱 어디서나 손쉽게 주입 받아 쓸 수 있도록 하는 함수
+export const useAuth = () => {
+  const authValue = useContext(AuthContext);
+  if (!authValue) {
+    throw new Error('useAuth 훅은 AuthProvider 내부에서만 사용할 수 있습니다.');
+  }
+
+  return authValue;
+};

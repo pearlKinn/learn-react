@@ -2,8 +2,10 @@ import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import pb from "@/api/pocketbase";
 import debounce from "@/utils/debounce";
+import { useAuth } from "@/contexts/Auth";
 
 function SignIn() {
+  const { isAuth } = useAuth();
   const navigate = useNavigate();
 
   const [formState, setFormState] = useState({
@@ -77,7 +79,7 @@ function SignIn() {
       </form>
 
       <Link to="/signup">회원가입</Link>
-      <button
+      {isAuth  && <button
         type="button"
         className="ml-4"
         onClick={async () => {
@@ -96,7 +98,7 @@ function SignIn() {
         }}
       >
         탈퇴
-      </button>
+      </button>}
     </div>
   );
 }

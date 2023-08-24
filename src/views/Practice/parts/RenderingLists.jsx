@@ -1,4 +1,6 @@
+import { string } from "@/utils/PropTypes";
 import { reactLibrary } from "./data";
+import {arrayOf} from 'prop-types'
 
 function RenderingLists({ statusMessage, renderList }) {
   return (
@@ -48,6 +50,10 @@ function RenderingLists({ statusMessage, renderList }) {
       </dd>
     </>
   );
+}
+
+RenderingLists.propTypes = {
+  statusMessage: arrayOf([string])
 }
 
 export default RenderingLists;
