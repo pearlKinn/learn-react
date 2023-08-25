@@ -8,6 +8,7 @@ import {
   useUpdate as useUpdateProduct,
 } from "@/hooks/products/useProducts";
 import debounce from "@/utils/debounce";
+import { Helmet } from "react-helmet-async";
 
 const initialFormState = {
   title: "",
@@ -112,6 +113,9 @@ function ProductEdit() {
   if (data) {
     return (
       <>
+      <Helmet>
+        <title>Product Edit - ReactBird</title>
+      </Helmet>
         <h2 className="text-2xl text-center">
           {data.title}({data.color}) 수정 폼
         </h2>

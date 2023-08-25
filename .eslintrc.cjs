@@ -11,7 +11,7 @@ module.exports = {
     "dist",
     ".eslintrc.cjs",
     "pocketbase",
-    // "src/learn",
+    "src/learn",
     "src/views",
   ],
   parserOptions: { ecmaVersion: "latest", sourceType: "module" },

@@ -53,7 +53,7 @@ function ScreenCast(props) {
       <dt className="font-semibold underline">Title</dt>
       <dd>{props.title}</dd>
       <dt className="font-semibold underline">Online</dt>
-      <dd>{props.isOnline ? "🟢" : "🔴"}</dd>
+      <dd>{props.isOnline ? "💚" : "❤️"}</dd>
       <dt className="font-semibold underline">Price</dt>
       <dd>{numberWithComma(props.price)}</dd>
       <dt className="font-semibold underline">Tags</dt>
@@ -67,7 +67,6 @@ function ScreenCast(props) {
     </dl>
   );
 }
-
 // PropTypes
 // 컴포넌트 속성(props) 유효성 검사 도구
 // 컴포넌트.propTypes = {}
@@ -83,10 +82,10 @@ ScreenCast.propTypes = {
     })
   ).isRequired,
 
-  // 문자 유형으로만 구성된 배열
+  //^ 문자 유형으로만 구성된 배열
   // tags: PropTypes.arrayOf(PropTypes.string), // string[] | Array<string>
 
-  // 숫자, 문자, 불리언으로 구성된 배열
+  //^ 숫자, 문자, 불리언으로 구성된 배열
   // tags: PropTypes.arrayOf(
   //   PropTypes.oneOfType([PropTypes.string, PropTypes.number, PropTypes.bool])
   // ), // (string|number|boolean)[] | Array<string|number|boolean>

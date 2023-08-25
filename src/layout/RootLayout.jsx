@@ -3,7 +3,7 @@ import { bool } from 'prop-types';
 import FooterBar from './FooterBar';
 import HeaderBar from './HeaderBar';
 
-function RootLayout({ displaySideMenu = true }) {
+function RootLayout({ displaySideMenu = false }) {
   return (
     <>
       <HeaderBar />
@@ -52,6 +52,9 @@ function RootLayout({ displaySideMenu = true }) {
               </li>
               <li>
                 <Link to="/learn/09">prop Types 유효성 검사</Link>
+              </li>
+              <li>
+                <Link to="/learn/10">로컬스토리지 활용</Link>
               </li>
             </ul>
           </nav>

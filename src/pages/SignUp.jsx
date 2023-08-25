@@ -23,7 +23,7 @@ function SignUp() {
     if (password !== passwordConfirm) {
       alert('비밀번호가 일치하지 않습니다. 다시 확인해보세요.')
     }
-    console.log();
+
     // PocketBase SDK 인증 요청
     await pb.collection('users').create({
       ...formState,
