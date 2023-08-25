@@ -15,6 +15,7 @@ import RefExampleReferencingDOM from "./learn/6-ref-referencing-dom";
 import GSAP_Animation from "./learn/7-1-ref-gsap-animation";
 import GSAP_Context from "./learn/7-2-ref-gsap-context";
 import FramerMotion_Animation from "./learn/8-framer-motion-declaration-animation";
+import ComponentPropTypes from "./learn/9-component-prop-types";
 import Contact from "./pages/Contact";
 import Home from "./pages/Home";
 import ProductEdit from "./pages/ProductEdit";
@@ -54,6 +55,7 @@ const router = createBrowserRouter(
       <Route path="learn/07/01" element={<GSAP_Animation />} />
       <Route path="learn/07/02" element={<GSAP_Context />} />
       <Route path="learn/08" element={<FramerMotion_Animation />} />
+      <Route path="learn/09" element={<ComponentPropTypes />} />
     </Route>
   )
 );

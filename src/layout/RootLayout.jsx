@@ -3,7 +3,7 @@ import { bool } from 'prop-types';
 import FooterBar from './FooterBar';
 import HeaderBar from './HeaderBar';
 
-function RootLayout({ displaySideMenu = false }) {
+function RootLayout({ displaySideMenu = true }) {
   return (
     <>
       <HeaderBar />
@@ -49,6 +49,9 @@ function RootLayout({ displaySideMenu = false }) {
               </li>
               <li>
                 <Link to="/learn/08">Framer Motion 애니메이션</Link>
+              </li>
+              <li>
+                <Link to="/learn/09">prop Types 유효성 검사</Link>
               </li>
             </ul>
           </nav>

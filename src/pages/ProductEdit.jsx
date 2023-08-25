@@ -42,12 +42,12 @@ function ProductEdit() {
     }
   }, [isLoading, data]);
 
-  const handleChangeInput = ({ target }) => {
-    setFormState({
-      ...formState,
-      [target.name]: target.value,
-    });
-  };
+  // const handleChangeInput = ({ target }) => {
+  //   setFormState({
+  //     ...formState,
+  //     [target.name]: target.value,
+  //   });
+  // };
 
   const handleDebounceChangeInput = debounce(({ target }) => {
     setFormState({

@@ -6,14 +6,16 @@ import { Toaster } from "react-hot-toast";
 
 function App() {
   return (
-    <ThemeProvider>
-      <AuthProvider>
-        <Toaster/>
-        <div className="App">
-          <RouterProvider router={router} />
-        </div>
-      </AuthProvider>
-    </ThemeProvider>
+    <>
+      <ThemeProvider>
+        <AuthProvider>
+          <div className="App">
+            <RouterProvider router={router} />
+          </div>
+        </AuthProvider>
+      </ThemeProvider>
+      <Toaster />
+    </>
   );
 }
 
