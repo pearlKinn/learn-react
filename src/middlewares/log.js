@@ -1,0 +1,11 @@
+export const log = (config) => (set, get, api) => {
+	return config(
+		(args) => {
+			console.log('  적용', args);
+			set(args);
+			console.log('  새로운 상태', get());
+		},
+		get,
+		api,
+	);
+};

@@ -1,9 +1,30 @@
-import { useListStore } from '@/store/list';
-import { useRef } from 'react';
-import { Helmet } from 'react-helmet-async';
-import { shape, string } from 'prop-types';
+// import { useCountStore } from "@/store/count";
+import { useListStore } from "@/store/list";
+import { string } from "prop-types";
+import { useRef } from "react";
+import { Helmet } from "react-helmet-async";
+import Logo from "./partials/Logo";
+// import { useCatsStore } from "@/store/cats";
+// import { useLayoutEffect } from "react";
+import { useStore } from "@/store/store";
 
 function ZustandLibrary() {
+  const switchMode = useStore((state) => state.switchMode);
+  console.log(switchMode);
+
+  //: const cats = useCatsStore(
+  //:   /* 선택하는 함수(셀렉터: selector) */
+  //:   (state) => state.cats
+  //: );
+  //: const addCat = useCatsStore((state) => state.addCat);
+  //: const removeCat = useCatsStore((state) => state.removeCat);
+  //: console.log(cats); // 읽기
+
+  //@ const { increment, decrement, reset } = useCountStore((state) => {
+  //@   const { count, ...restAction } = state;
+  //@   return restAction;
+  //@ });
+
   return (
     <>
       <Helmet>
@@ -11,12 +32,12 @@ function ZustandLibrary() {
       </Helmet>
       <h2 className="headline text-sky-500">Zustand 라이브러리 활용</h2>
 
-      <details>
+      <details className="mb-10">
         <summary>Zustand 발음 어떻게 해야할까요?</summary>
 
         <p className="mt-4 pl-4 leading-normal text-sm">
           독일어 Zu는 혀끝을 아래 이에 붙이고 <q>ㅊ</q> 또는 <q>ㅅ</q>과
-          비슷하게 발음하는{' '}
+          비슷하게 발음하는{" "}
           <q>
             <a
               href="https://namu.wiki/w/%EC%B9%98%EA%B2%BD%EC%9D%8C#%ED%8C%8C%EC%B0%B0"
@@ -27,7 +48,7 @@ function ZustandLibrary() {
               치경 파찰음
             </a>
           </q>
-          으로 현재 한국인이 발음하기 힘듭니다. 발음 기호를 보면{' '}
+          으로 현재 한국인이 발음하기 힘듭니다. 발음 기호를 보면{" "}
           <u>tsuu·schtant</u>이고, 발음을 들어보면 <q>츄(또는 슈)슈탄트</q>
           라고 들립니다.
         </p>
@@ -76,13 +97,59 @@ function ZustandLibrary() {
         </ul>
       </details>
 
-      <AddItemControl />
-      <ItemList />
+      <DisplayCount />
+      <div className="wrapper">
+        <AddItemControl />
+        <ItemList />
+      </div>
+
+      {/* 
+      <div className='flex gap-3'>
+        <button onClick={()=>increment(10)}>+</button>
+        <button onClick={()=>decrement(5)}>-</button>
+        <button onClick={reset}>reset</button>
+      </div> 
+      */}
+
+      {/* 
+      <button
+        type="button"
+        onClick={() =>
+          addCat({
+            name: '히로',
+            age: 2,
+            gender: 'male',
+          })
+        }
+      >
+        냥이 모집
+      </button>
+      <button type="button" onClick={() => removeCat('더미')}>
+        냥이 졸업
+      </button> 
+      */}
     </>
   );
 }
 
 export default ZustandLibrary;
+
+/* -------------------------------------------------------------------------- */
+
+function DisplayCount() {
+  const list = useListStore((state) => state.list);
+
+  return (
+    <header className="header">
+      <h1>
+        <Logo />
+      </h1>
+      <output className="output">{list.length}</output>
+    </header>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
 
 function AddItemControl() {
   const itemRef = useRef(null);
@@ -91,38 +158,47 @@ function AddItemControl() {
   const handleAddItem = () => {
     const newItemTitle = itemRef.current.value;
     addItem(newItemTitle);
-    itemRef.current.value = '';
+    itemRef.current.value = "";
   };
 
   return (
-    <div className="mt-5">
+    <div className="mt-5 flex gap-2">
       <input
         type="text"
         ref={itemRef}
         aria-label="학습 주제 추가"
         placeholder="예) Zustand 발음 10번 하기"
-        className="py-1 px-2 border-b border-b-slate-400 mr-2"
+        className="flex-1 py-1 px-2 border-b border-b-slate-400 mr-2 min-w-[200px] text-sky-600 outline-none focus:border-b-sky-600"
       />
-      <button type="button" onClick={handleAddItem}>
+      <button type="button" className="button" onClick={handleAddItem}>
         추가
       </button>
     </div>
   );
 }
 
+/* -------------------------------------------------------------------------- */
+
 function ItemList() {
   const list = useListStore((state) => state.list);
 
   return (
-    <ul className="my-8">
-      {list?.map((item) => (
-        <Item key={item.id} item={item} />
-      ))}
+    <ul className={`my-5 list ${list.length === 0 ? "empty" : ""}`}>
+      {list.length > 0 ? (
+        list?.map((item) => <Item key={item.id} id={item.id} />)
+      ) : (
+        <li>표시할 항목이 없습니다.</li>
+      )}
     </ul>
   );
 }
 
-function Item({ item }) {
+/* -------------------------------------------------------------------------- */
+
+function Item({ id }) {
+  const item = useListStore((state) =>
+    state.list.find((item) => item.id === id)
+  );
   const deleteItem = useListStore((state) => state.deleteItem);
   const handleDeleteItem = (deleteId) => {
     deleteItem(deleteId);
@@ -130,8 +206,12 @@ function Item({ item }) {
 
   return (
     <li>
-      {item.title}{' '}
-      <button type="button" onClick={() => handleDeleteItem(item.id)}>
+      {item.title}{" "}
+      <button
+        type="button"
+        className="button"
+        onClick={() => handleDeleteItem(item.id)}
+      >
         삭제
       </button>
     </li>
@@ -139,8 +219,5 @@ function Item({ item }) {
 }
 
 Item.propTypes = {
-  item: shape({
-    id: string.isRequired,
-    title: string.isRequired,
-  }),
+  id: string.isRequired,
 };

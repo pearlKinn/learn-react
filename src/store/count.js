@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 
-const initialCount = 9;
+const initialCount = 0;
 
 export const useCountStore = create((set) => ({
   count: initialCount,
