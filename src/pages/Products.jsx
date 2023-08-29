@@ -1,42 +1,38 @@
-//^ import { useProducts } from "@/api/useProducts";
-//^ import { useEffect } from "react";
-import Spinner from "@/components/Spinner";
-import useDocumentTitle from "@/hooks/useDocumentTitle";
-import useProductList from "@/hooks/useProductList";
-import { getPbImageURL, numberWithComma } from "@/utils";
-import { Link } from "react-router-dom";
+import Spinner from '@/components/Spinner';
+import useDocumentTitle from '@/hooks/useDocumentTitle';
+import useProductList from '@/hooks/useProductList';
+import { getPbImageURL, numberWithComma } from '@/utils';
+import { motion } from 'framer-motion';
+import { number, shape, string } from 'prop-types';
+import { Helmet } from 'react-helmet-async';
+import { Link } from 'react-router-dom';
 
-// PB → READ / CREATE / UPDATE / DELETE
-//
-// HTTP Methods
-// CREATE => POST
-// READ => GET
-// UPDATE => PUT OR PATCH
-// DELETE => DELETE
+const list = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      duration: 0.6,
+      delayChildren: 0,
+      staggerChildren: 0.3,
+    },
+  },
+};
 
-// useState
-// useEffect
-// custom hook
+const listItem = {
+  hidden: { y: 20, opacity: 0 },
+  visible: {
+    y: 0,
+    opacity: 1,
+    transition: {
+      y: { duration: 0.4 },
+    },
+  },
+};
 
 function Products() {
-  useDocumentTitle("제품 목록");
-  const { isLoading, data } = useProductList(); //sdk를 사용하지 않고 훅으로 사용했을 때
-
-  //^ const { status, data: sdkData, getProductList } = useProducts();
-
-  //^ useEffect(() => { 
-  //^   getProductList() 
-  //^     .then(() => { 
-  //^       console.log(status); 
-  //^       console.log(sdkData); 
-  //^     }) 
-  //^     .catch(() => { 
-  //^       console.log(status); 
-  //^     }); 
-  //^ }, []); 
-
-  // data null 속성 가질 수 없음
-  // data { ..., items: [] } PB에서 전달된 객체
+  useDocumentTitle('제품 목록');
+  const { isLoading, data } = useProductList();
 
   if (isLoading) {
     return <Spinner size={160} />;
@@ -44,34 +40,76 @@ function Products() {
 
   if (data) {
     return (
-      <div>
-        <h1 className="text-indigo-950 text-2xl mb-5">Products</h1>
-        <ul className="grid grid-cols-3">
-          {data.items.map((item) => (
-            <li key={item.id} className="justify-self-center">
-              <Link to={`/product/edit/${item.id}`}>
-                <figure>
-                  <img
-                    className="h-[160px] object-cover mx-auto"
-                    src={getPbImageURL(item, "photo")}
-                    alt=""
-                  />
-                  <figcaption className="flex flex-col gap-1 items-center mt-2">
-                    <span>
-                      {item.title} ({item.color})
-                    </span>
-                    <span className="font-semibold">
-                      {numberWithComma(item.price)}
-                    </span>
-                  </figcaption>
-                </figure>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </div>
+      <>
+        <Helmet>
+          <title>Product List - ReactBird</title>
+        </Helmet>
+        <div className="container mx-auto">
+          <h2 className="text-indigo-950 dark:text-sky-400/90 text-center text-2xl uppercase mt-5 mb-7">
+            Products
+          </h2>
+          <motion.ul
+            className="grid gap-10 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+            variants={list}
+            initial="hidden"
+            animate="visible"
+          >
+            {data.items.map((item) => (
+              <ProductItem key={item.id} item={item} />
+            ))}
+          </motion.ul>
+        </div>
+      </>
     );
   }
 }
 
 export default Products;
+
+function ProductItem({ item, ...restProps }) {
+  return (
+    <motion.li
+      key={item.id}
+      className="justify-self-center"
+      variants={listItem}
+      {...restProps}
+    >
+      <Link to={`/product/edit/${item.id}`}>
+        <figure>
+          <motion.img
+            className="h-min-[160px] object-cover mx-auto rounded border border-slate-300/60 shadow-md mb-4"
+            src={getPbImageURL(item, 'photo')}
+            alt=""
+            whileHover={{ scale: 1.04 }}
+          />
+          <figcaption className="flex flex-col gap-1 items-center mt-2">
+            <span className="text-sm text-center text-slate-600 dark:text-zinc-300/80">
+              {item.title}
+              <br />
+              <span
+                className={`inline-flex rounded-full w-2.5 h-2.5 dark:outline-1 dark:outline-double dark:outline-stone-400/50 ${
+                  item.color.toLowerCase() === 'blue'
+                    ? 'bg-sky-600'
+                    : 'bg-black'
+                }`}
+              ></span>{' '}
+              {item.color}
+            </span>
+            <span className="font-semibold text-sm text-zinc-600 dark:text-zinc-500">
+              {numberWithComma(item.price)}
+            </span>
+          </figcaption>
+        </figure>
+      </Link>
+    </motion.li>
+  );
+}
+
+ProductItem.propTypes = {
+  item: shape({
+    id: string,
+    title: string,
+    color: string,
+    price: number,
+  }),
+};

@@ -1,178 +1,216 @@
-import { useEffect, useId, useState } from "react";
-import { useParams } from "react-router-dom";
-import useProductItem from "@/hooks/useProductItem";
-import Spinner from "@/components/Spinner";
-import { useNavigate } from "react-router-dom";
-import {
-  useDelete as useDeleteProduct,
-  useUpdate as useUpdateProduct,
-} from "@/hooks/products/useProducts";
-import debounce from "@/utils/debounce";
-import { Helmet } from "react-helmet-async";
+import pb from '@/api/pocketbase';
+import { getPbImageURL } from '@/utils';
+import { useEffect, useRef, useState } from 'react';
+import { Helmet } from 'react-helmet-async';
+import { toast } from 'react-hot-toast';
+import { useNavigate, useParams } from 'react-router-dom';
 
-const initialFormState = {
-  title: "",
-  color: "",
-  price: "",
-  /* 숫자로 설정했을 때 defaultValue를 사용하면 원래 값이 뜨지 않고 0원으로 뜨는 이슈가 있어 숫자가 아닌 빈 문자열로 바꿔주면 된다. */
+const resetData = {
+  title: '',
+  color: '',
+  price: '',
+  photo: '',
 };
 
 function ProductEdit() {
-  const titleId = useId();
-  const priceId = useId();
-  const colorId = useId();
-
-  //% useParams()가 반환하는 객체에서 productId 속성의 값을 추출하여 productId 변수에 할당
-  const { productId } = useParams(); // useParams() -> 객체 반환
-
+  const { productId } = useParams();
   const navigate = useNavigate();
-  const { isLoading, data } = useProductItem(productId);
 
-  const [formState, setFormState] = useState(initialFormState);
-
-  const deleteProduct = useDeleteProduct();
-  const updateProduct = useUpdateProduct();
+  const formRef = useRef(null);
+  const titleRef = useRef(null);
+  const colorRef = useRef(null);
+  const priceRef = useRef(null);
+  const photoRef = useRef(null);
 
   useEffect(() => {
-    if (!isLoading && data) {
-      setFormState({
-        title: data.title,
-        price: data.price,
-        color: data.color,
+    async function getProduct() {
+      try {
+        const product = await pb.collection('products').getOne(productId);
+        const { title, color, price } = product;
+        resetData.title = titleRef.current.value = title;
+        resetData.color = colorRef.current.value = color;
+        resetData.price = priceRef.current.value = price.toString();
+        const photoUrl = (resetData.photo = getPbImageURL(product, 'photo'));
+        setFileImages((fileImages) => [
+          ...fileImages,
+          { image: photoUrl, label: photoUrl },
+        ]);
+      } catch (error) {
+        if (!(error in DOMException)) {
+          console.error();
+        }
+      }
+    }
+
+    getProduct();
+  }, [productId]);
+
+  const handleUpdate = async (e) => {
+    e.preventDefault();
+
+    const titleValue = titleRef.current.value;
+    const colorValue = colorRef.current.value;
+    const priceValue = Number(priceRef.current.value);
+    const photoValue = photoRef.current.files;
+
+    if (!titleValue && !colorValue && !priceValue) {
+      toast('이름, 색상, 가격 정보 입력이 필요합니다.', {
+        icon: '🚨',
+        ariaProps: {
+          role: 'status',
+          'aria-live': 'polite',
+        },
       });
+
+      return;
     }
-  }, [isLoading, data]);
 
-  // const handleChangeInput = ({ target }) => {
-  //   setFormState({
-  //     ...formState,
-  //     [target.name]: target.value,
-  //   });
-  // };
+    const formData = new FormData();
 
-  const handleDebounceChangeInput = debounce(({ target }) => {
-    setFormState({
-      ...formState,
-      [target.name]: target.value,
-    });
-  });
+    formData.append('title', titleValue);
+    formData.append('color', colorValue);
+    formData.append('price', priceValue);
 
-  const handleEditProduct = (e) => {
-    e.preventDefault(); //~ <- submit을 하면 refresh가 되는데 그걸 방지하기 위해
+    if (photoValue.length > 0) {
+      formData.append('photo', photoValue[0]);
+    }
 
-    updateProduct(productId, formState) // formState - 서버에 업데이트 요청할 데이터 (서버 전송 요청)
-      .then(() => navigate("/products"))
-      .catch((error) => console.error(error));
-
-    //! client -> server
-  };
-  // Content-Type: application/json
-  /**  ⬇️⬇️⬇️
-  fetch(
-  //^  `${                                           
-  //^    import.meta.env.VITE_PB_API                 
-  //^  }/collections/products/records/${productId}`, 
-  //^  {                                             
-  //^    method: "PATCH", // 수정!!                   
-  //^    headers: {                                  
-  //^      "Content-Type": "application/json",       
-  //^    },                                          
-  //^    body: JSON.stringify(formState),            
-  //^  }                                             
-  //^)                                               
-  //^  .then((response) => console.log(response))    
-  //^  .catch((err) => console.log(err));            
-  //^  */
-
-  const handleDeleteProduct = () => {
-    const userConfirm = confirm("정말로 지우실 건가요?");
-
-    if (userConfirm) {
-      deleteProduct(productId)
-        .then(() => {
-          navigate("/products");
-        })
-        .catch((err) => console.error(err));
-
-      //^ fetch( `${ import.meta.env.VITE_PB_API }/collections/products/records/${productId}`,
-      //^   {
-      //^     method: "DELETE", // 수정!!
-      //^   }
-      //^ )
-      //^   .then(() => {
-      //^     // PB에서 지웠다(성공)
-      //^     // 제품 목록 페이지로 이동
-      //^     navigate("/products");
-      //^   })
-      //^   .catch((err) => console.error(err));
+    try {
+      await pb.collection('products').update(productId, formData);
+      navigate('/products');
+    } catch (error) {
+      console.error(error);
     }
   };
-  if (isLoading) {
-    return <Spinner size={120} />;
-  }
-  if (data) {
-    return (
-      <>
+
+  const handleReset = (e) => {
+    e.preventDefault();
+    titleRef.current.value = resetData.title;
+    colorRef.current.value = resetData.color;
+    priceRef.current.value = resetData.price.toString();
+    setFileImages(() => [{ image: resetData.photo, label: resetData.photo }]);
+  };
+
+  const [fileImages, setFileImages] = useState([]);
+
+  const handleUpload = (e) => {
+    const { files } = e.target;
+    const fileImages = Array.from(files).map((file) => ({
+      image: URL.createObjectURL(file),
+      label: file.name,
+    }));
+    setFileImages(fileImages);
+  };
+
+  return (
+    <>
       <Helmet>
-        <title>Product Edit - ReactBird</title>
+        <title>
+          {titleRef.current
+            ? `${titleRef.current.value}(${colorRef.current.value}) - ReactBird`
+            : 'Loading... - ReactBird'}
+        </title>
       </Helmet>
-        <h2 className="text-2xl text-center">
-          {data.title}({data.color}) 수정 폼
+      <div className="container max-w-lg mx-auto">
+        <h2 className="my-5 text-2xl font-medium text-blue-950 text-center dark:text-sky-500/90">
+          상품 수정
         </h2>
-        <form onSubmit={handleEditProduct} className="flex flex-col">
-          {/* title */}
-          <div className="flex gap-3">
-            <label htmlFor={titleId}>타이틀</label>
+        <form
+          encType="multipart/form-data"
+          ref={formRef}
+          onSubmit={handleUpdate}
+          className="flex flex-col gap-2 items-center"
+        >
+          <div className="flex flex-col gap-2 w-full">
+            <label htmlFor="title">이름</label>
             <input
+              ref={titleRef}
               type="text"
               name="title"
-              id={titleId}
-              defaultValue={formState.title} // 리액트가 제공하지 않는 함수를 사용할 때는  defaultValue 사용해야 한다.
-              onChange={handleDebounceChangeInput} // debounce 함수
-              className="border border-gray-600"
+              id="title"
+              placeholder="Slim Fit Ribbed Sleeveless"
+              className="
+              border border-slate-300 py-1.5 px-4 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2
+              dark:bg-black dark:border-zinc-300/40 dark:placeholder:text-zinc-600 dark:text-sky-400 dark:focus:ring-1 dark:focus:ring-sky-400 dark:focus:ring-offset-1
+            "
             />
           </div>
-          {/* color */}
-          <div className="flex gap-3">
-            <label htmlFor={colorId}>컬러</label>
+          <div className="flex flex-col gap-2 w-full">
+            <label htmlFor="color">색상</label>
             <input
               type="text"
+              ref={colorRef}
               name="color"
-              id={colorId}
-              defaultValue={formState.color}
-              onChange={handleDebounceChangeInput}
-              className="border border-gray-600"
+              id="color"
+              placeholder="Black"
+              className="
+              border border-slate-300 py-1.5 px-4 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2
+              dark:bg-black dark:border-zinc-300/40 dark:placeholder:text-zinc-600 dark:text-sky-400 dark:focus:ring-1 dark:focus:ring-sky-400 dark:focus:ring-offset-1
+            "
             />
           </div>
-          {/* price */}
-          <div className="flex gap-3">
-            <label htmlFor={priceId}>price</label>
+          <div className="flex flex-col gap-2 w-full">
+            <label htmlFor="price">가격</label>
             <input
-              step={100}
               type="number"
+              ref={priceRef}
               name="price"
-              id={priceId}
-              defaultValue={formState.price}
-              onChange={handleDebounceChangeInput}
-              className="border border-gray-600"
+              id="price"
+              placeholder="49000"
+              step="100"
+              className="
+              border border-slate-300 py-1.5 px-4 w-full rounded-md focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2
+              dark:bg-black dark:border-zinc-300/40 dark:placeholder:text-zinc-600 dark:text-sky-400 dark:focus:ring-1 dark:focus:ring-sky-400 dark:focus:ring-offset-1
+            "
             />
           </div>
-          <div className=" flex gap-4 justify-end">
-            <button type="submit" className="border border-gray-950">
-              edit
+          <div className="flex flex-col gap-2 w-full">
+            <label htmlFor="photo">사진</label>
+            <div className="relative">
+              <input
+                type="file"
+                accept="*.jpg,*.png,*.jpeg,*.webp,*.avif"
+                ref={photoRef}
+                name="photo"
+                id="photo"
+                // multiple
+                onChange={handleUpload}
+                className="absolute z-10 w-full h-full opacity-0 cursor-pointer"
+              />
+              <div className="flex gap-2 overflow-x-auto p-2 w-full h-36 bg-slate-100 dark:bg-black dark:outline-[1px] dark:outline-double dark:outline-zinc-100/40 dark:rounded">
+                {fileImages.map((file) => {
+                  return (
+                    <img key={file.label} src={file.image} alt={file.label} />
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+          <div className="flex justify-center gap-2 w-full mt-4 mb-6">
+            <button
+              type="submit"
+              className="
+              py-1 px-3.5 border-2 border-slate-300 hover:border-slate-400 rounded-full
+              dark:text-sky-400 dark:border-sky-400 dark:border-[1px] dark:hover:bg-sky-400 dark:hover:text-sky-50 dark:hover:border-sky-500
+            "
+            >
+              수정
             </button>
             <button
-              type="button"
-              className="border border-gray-950"
-              onClick={handleDeleteProduct}
+              type="reset"
+              onClick={handleReset}
+              className="
+              py-1 px-3.5 border-2 border-slate-200 bg-slate-200 hover:bg-slate-300 hover:border-slate-300 rounded-full
+              dark:bg-zinc-400 dark:border-zinc-400
+            "
             >
-              delete
+              취소
             </button>
           </div>
         </form>
-      </>
-    );
-  }
+      </div>
+    </>
+  );
 }
 
 export default ProductEdit;
